@@ -1,0 +1,6 @@
+mysql> CREATE DATABASE studentmanagement;
+Query OK, 1 row affected (0.13 sec)
+
+mysql> USE studentmanagement;
+Database changed
+mysql>
