@@ -1,0 +1,112 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww29200\viewh18380\viewkind0
+\deftab720
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 I want department table data like \'93DE01\'94,\'94ICT\'94    .     iwant ICT and mds\
+\
+\
+\
+\
+I want 5 admins table data like \'93ADM01\'94,\'94DE01\'94,\'94kamal\'94,\'94silva\'94,\'94sdasd@gmail.com\'94,\'940700000000\'94,\'9415,galle\'94,\'9411.25.1990\'94,   .     Connect correct dipartment_ids,\
+\
+I want 1 deen table data like \'93ADM01\'94,\'94DE01\'94,\'94kamal\'94,\'94silva\'94,\'94sdasd@gmail.com\'94,\'940700000000\'94,\'9415,galle\'94,\'9411.25.1990\'94,   .     Connect correct dipartment_ids,  .   No need. Passwords\
+\
+\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\pardirnatural\partightenfactor0
+\cf0 I want 10 lecture table data like \'93LE01\'94,\'94DE01\'94,\'94kamal\'94,\'94silva\'94,\'94sdasd@gmail.com\'94,\'940700000000\'94,\'9415,galle\'94,\'9411.25.1990\'94,   .     Connect correct dipartment_ids,  .  8 lectures are ice department No need. Passwords\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\pardirnatural\partightenfactor0
+\cf0 \
+\
+\
+I want 8 subject table data like English - ENG1222, database management systems - ICT1212, database management systems practicum - ICT1222, server side web development - ICT1233, computer archutecture - ICT1242, computer networks - ICT1253, fundamentals of management - TCS1212, discrete mathematics is the courses - TCS1233.    Credits are codes last number    .    Only want student_id , name , credits\
+\
+\
+\
+I want 10 proper students and 5 repeat student for student table data like \'93TG1720\'94,\'94binoy\'94,\'94mahima\'94,\'94proper\'94,\'94binoy@gmail.com\'94,\'940712200000\'94,\'94ambalangoda,galle\'94,\'9410.22.2003\'94 don\'92t want age ..  make deferent names \
+\
+\
+\
+Connect table lecture and subject  like \'93ENG1222\'94.\'94DE02\'94 .\
+\
+\
+\
+Connect student and subject table all proper student studies all subjects report student only study some subjects \
+\
+\
+I want marks table data like \'93MA001\'94,\'94ENG1222\'94,\'94TG1720\'94,\'9480\'94,\'9485\'94,\'9475\'94,\'9460\'94,\'9470\'94,\'9480\'94.  Add all students and subject create above student subjects table\
+\
+\
+\
+I want medical table like \'93MED01\'94,\'94TG1720\'94,\'94What hapent\'94,\'94date\'94,\'94ENG1222\'94  .   Around 1 student one subject 2 medicles some student not submit medicals\
+\
+\
+\
+I want attendants table data like \'93ATN001\'94,\'94TG1720\'94,\'941 or 0 \'94,\'94date\'94,\'94ENG1222\'94.  All proper student want attendants data student come to lecture is 1 is not 0 \'85.  I want 8 subjects and 15 week and week have 5 date 1 subject have lecture in only one day in a week\
+\
+\
+\
+\
+CREATE TABLE dean (\
+  dean_id VARCHAR(50) PRIMARY KEY,\
+  department_id VARCHAR(50) ,\
+  fname VARCHAR(100),\
+  lname VARCHAR(100),\
+  email VARCHAR(255),\
+  phone_no VARCHAR(30),\
+  address VARCHAR(255),\
+  dob DATE,\
+  FOREIGN KEY (department_id) REFERENCES department(department_id) ON DELETE RESTRICT ON UPDATE CASCADE\
+);\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 INSERT INTO dean (dean_id, department_id, fname, lname, email, phone_no, address, dob)\
+VALUES ('DEAN01', 'DE01', \'91Subash\'92, 'Silva', 'sdasd@gmail.com', '0700000000', '15 Matara\'92, '1990-11-25');\
+\
+What is wrong\
+\
+\
+\
+\
+I want 5 technical office table data like \'93TE001\'94,\'94vihan\'94,\'94shalitha\'94,\'94yihan@gmail.com\'94,\'9407234000\'94,\'9427 Jafna \'94,\'944-25-1989\'94  no need pasword \
+\
+\
+\
+\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 INSERT INTO subject (subject_id, name, credits) VALUES\
+('ENG1222', 'English', 2),\
+('ICT1212', 'Database Management Systems', 2),\
+('ICT1222', 'Database Management Systems Practicum', 2),\
+('ICT1233', 'Server Side Web Development', 3),\
+('ICT1242', 'Computer Architecture', 2),\
+('ICT1253', 'Computer Networks', 3),\
+('TCS1212', 'Fundamentals of Management', 2),\
+('TCS1233', 'Discrete Mathematics', 3);\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 INSERT INTO student (reg_no, fname, lname, state, email, phone_no, address, dob) VALUES\
+('TG1720', 'Binoy', 'Mahima', 'Proper', 'binoy@gmail.com', '0712200000', 'Ambalangoda, Galle', '2003-10-22'),\
+('TG1721', 'Kavindu', 'Perera', 'Proper', 'kavindu.perera@gmail.com', '0712200001', 'Kandy', '2003-05-14'),\
+('TG1722', 'Tharushi', 'Fernando', 'Proper', 'tharushi.fernando@gmail.com', '0712200002', 'Colombo', '2003-07-25'),\
+('TG1723', 'Sithum', 'Jayasekara', 'Proper', 'sithum.jayasekara@gmail.com', '0712200003', 'Galle', '2003-04-11'),\
+('TG1724', 'Dinuli', 'Wickramasinghe', 'Proper', 'dinuli.wickramasinghe@gmail.com', '0712200004', 'Matara', '2003-08-19'),\
+('TG1725', 'Naveen', 'Silva', 'Proper', 'naveen.silva@gmail.com', '0712200005', 'Kurunegala', '2003-12-03'),\
+('TG1726', 'Lihini', 'Kumari', 'Proper', 'lihini.kumari@gmail.com', '0712200006', 'Negombo', '2003-09-10'),\
+('TG1727', 'Pasan', 'Jayawardena', 'Proper', 'pasan.jayawardena@gmail.com', '0712200007', 'Colombo', '2003-06-21'),\
+('TG1728', 'Iresha', 'Bandara', 'Proper', 'iresha.bandara@gmail.com', '0712200008', 'Kandy', '2003-11-28'),\
+('TG1729', 'Kasun', 'Lakshan', 'Proper', 'kasun.lakshan@gmail.com', '0712200009', 'Matara', '2003-03-05'),\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 \
+This is student and subject tables make procidia \
+\
+\
+\
+\
+}

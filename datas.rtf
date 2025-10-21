@@ -1,0 +1,356 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww29200\viewh17820\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 \
+\
+INSERT INTO department (department_id, name) VALUES\
+('DE01', 'ICT'),\
+('DE02', 'MDS');\
+\
+\
+\
+INSERT INTO admin (admin_id, department_id, fname, lname, email, phone_no, address, dob) VALUES\
+('ADM01', 'DE01', 'Kamal', 'Silva', 'kamal.silva@gmail.com', '0700000000', '15, Galle', '1990-11-25'),\
+('ADM02', 'DE01', 'Nimal', 'Perera', 'nimal.perera@gmail.com', '0711111111', '22, Colombo', '1988-04-12'),\
+('ADM03', 'DE02', 'Sunil', 'Fernando', 'sunil.fernando@gmail.com', '0722222222', '40, Matara', '1992-07-30'),\
+('ADM04', 'DE02', 'Ruwan', 'Jayasinghe', 'ruwan.jayasinghe@gmail.com', '0755555555', '10, Kandy', '1991-09-18'),\
+('ADM05', 'DE02', 'Anusha', 'Wijesinghe', 'anusha.wijesinghe@gmail.com', '0766666666', '55, Gampaha', '1993-02-05');\
+\
+\
+\
+\
+\
+INSERT INTO dean (dean_id, department_id, fname, lname, email, phone_no, address, dob)\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 VALUES ('DEAN01', 'DE01', 'Subash', 'Silva', 'sdasd@gmail.com', '0700000000', '15 Matara', '1990-11-25');\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 \
+\
+\
+INSERT INTO lecturer (lecturer_id, department_id, fname, lname, email, phone_no, address, dob, lec_hours)\
+VALUES\
+('LE01', 'DE01', 'Kasun', 'Perera', 'kamal.perera@ictuni.edu', '0701111111', '12, Galle', '1988-11-25', 12),\
+('LE02', 'DE01', 'Niroshan', 'Fernando', 'niroshan.fernando@ictuni.edu', '0702222222', '24, Colombo', '1989-09-12', 14),\
+('LE03', 'DE01', 'Sajith', 'De Silva', 'sajith.desilva@ictuni.edu', '0703333333', '10, Kandy', '1990-06-14', 10),\
+('LE04', 'DE01', 'Ishara', 'Wijesinghe', 'ishara.wijesinghe@ictuni.edu', '0704444444', '45, Matara', '1991-04-21', 16),\
+('LE05', 'DE01', 'Ruwan', 'Abeysinghe', 'ruwan.abey@ictuni.edu', '0705555555', '30, Gampaha', '1987-08-17', 11),\
+('LE06', 'DE01', 'Malith', 'Jayawardena', 'malith.jay@ictuni.edu', '0706666666', '18, Kurunegala', '1992-02-05', 13),\
+('LE07', 'DE01', 'Chathuri', 'Gunasekara', 'chathuri.g@ictuni.edu', '0707777777', '60, Negombo', '1989-03-19', 15),\
+('LE08', 'DE01', 'Pradeepa', 'Edirisinghe', 'pradeepa.e@ictuni.edu', '0708888888', '90, Kalutara', '1993-05-10', 12),\
+('LE09', 'DE02', 'Nadeesha', 'Fernando', 'nadeesha.f@mdsuni.edu', '0709999999', '22, Colombo', '1990-10-25', 10),\
+('LE10', 'DE02', 'Harsha', 'Senanayake', 'harsha.s@mdsuni.edu', '0710000000', '14, Matara', '1988-12-30', 14);\
+\
+\
+\
+\
+\
+INSERT INTO subject (subject_id, name, credits) VALUES\
+('ENG1222', 'English', 2),\
+('ICT1212', 'Database Management Systems', 2),\
+('ICT1222', 'Database Management Systems Practicum', 2),\
+('ICT1233', 'Server Side Web Development', 3),\
+('ICT1242', 'Computer Architecture', 2),\
+('ICT1253', 'Computer Networks', 3),\
+('TCS1212', 'Fundamentals of Management', 2),\
+('TCS1233', 'Discrete Mathematics', 3);\
+\
+\
+\
+INSERT INTO lecturer_course (lecturer_id, course_id) VALUES\
+('LE01', 'ENG1222'),\
+('LE02', 'ICT1212'),\
+('LE02', 'ICT1222'),\
+('LE03', 'ICT1233'),\
+('LE04', 'ICT1242'),\
+('LE04', 'ICT1253'),\
+('LE05', 'TCS1212'),\
+('LE05', 'TCS1233');\
+\
+\
+\
+\
+\
+INSERT INTO student (reg_no, fname, lname, state, email, phone_no, address, dob) VALUES\
+('TG1720', 'Binoy', 'Mahima', 'Proper', 'binoy@gmail.com', '0712200000', 'Ambalangoda, Galle', '2003-10-22'),\
+('TG1721', 'Kavindu', 'Perera', 'Proper', 'kavindu.perera@gmail.com', '0712200001', 'Kandy', '2003-05-14'),\
+('TG1722', 'Tharushi', 'Fernando', 'Proper', 'tharushi.fernando@gmail.com', '0712200002', 'Colombo', '2003-07-25'),\
+('TG1723', 'Sithum', 'Jayasekara', 'Proper', 'sithum.jayasekara@gmail.com', '0712200003', 'Galle', '2003-04-11'),\
+('TG1724', 'Dinuli', 'Wickramasinghe', 'Proper', 'dinuli.wickramasinghe@gmail.com', '0712200004', 'Matara', '2003-08-19'),\
+('TG1725', 'Naveen', 'Silva', 'Proper', 'naveen.silva@gmail.com', '0712200005', 'Kurunegala', '2003-12-03'),\
+('TG1726', 'Lihini', 'Kumari', 'Proper', 'lihini.kumari@gmail.com', '0712200006', 'Negombo', '2003-09-10'),\
+('TG1727', 'Pasan', 'Jayawardena', 'Proper', 'pasan.jayawardena@gmail.com', '0712200007', 'Colombo', '2003-06-21'),\
+('TG1728', 'Iresha', 'Bandara', 'Proper', 'iresha.bandara@gmail.com', '0712200008', 'Kandy', '2003-11-28'),\
+('TG1729', 'Kasun', 'Lakshan', 'Proper', 'kasun.lakshan@gmail.com', '0712200009', 'Matara', '2003-03-05'),\
+('TG1730', 'Sajini', 'Perera', 'Repeat', 'sajini.perera@gmail.com', '0712200010', 'Colombo', '2002-04-12'),\
+('TG1731', 'Dulanjan', 'Hettiarachchi', 'Repeat', 'dulanjan.hettiarachchi@gmail.com', '0712200011', 'Kegalle', '2002-02-23'),\
+('TG1732', 'Thilina', 'Rajapaksha', 'Repeat', 'thilina.rajapaksha@gmail.com', '0712200012', 'Kurunegala', '2002-09-16'),\
+('TG1733', 'Maneesha', 'Fernando', 'Repeat', 'maneesha.fernando@gmail.com', '0712200013', 'Galle', '2002-07-07'),\
+('TG1734', 'Sandeepa', 'Madushan', 'Repeat', 'sandeepa.madushan@gmail.com', '0712200014', 'Matara', '2002-12-01');\
+\
+\
+\
+INSERT INTO student_subject (reg_no, subject_id, semester) VALUES\
+('TG1720','ENG1222','L1S2'),\
+('TG1720','ICT1212','L1S2'),\
+('TG1720','ICT1222','L1S2'),\
+('TG1720','ICT1233','L1S2'),\
+('TG1720','ICT1242','L1S2'),\
+('TG1720','ICT1253','L1S2'),\
+('TG1720','TCS1212','L1S2'),\
+('TG1720','TCS1233','L1S2'),\
+\
+('TG1721','ENG1222','L1S2'),\
+('TG1721','ICT1212','L1S2'),\
+('TG1721','ICT1222','L1S2'),\
+('TG1721','ICT1233','L1S2'),\
+('TG1721','ICT1242','L1S2'),\
+('TG1721','ICT1253','L1S2'),\
+('TG1721','TCS1212','L1S2'),\
+('TG1721','TCS1233','L1S2'),\
+\
+('TG1722','ENG1222','L1S2'),\
+('TG1722','ICT1212','L1S2'),\
+('TG1722','ICT1222','L1S2'),\
+('TG1722','ICT1233','L1S2'),\
+('TG1722','ICT1242','L1S2'),\
+('TG1722','ICT1253','L1S2'),\
+('TG1722','TCS1212','L1S2'),\
+('TG1722','TCS1233','L1S2'),\
+\
+('TG1723','ENG1222','L1S2'),\
+('TG1723','ICT1212','L1S2'),\
+('TG1723','ICT1222','L1S2'),\
+('TG1723','ICT1233','L1S2'),\
+('TG1723','ICT1242','L1S2'),\
+('TG1723','ICT1253','L1S2'),\
+('TG1723','TCS1212','L1S2'),\
+('TG1723','TCS1233','L1S2'),\
+\
+('TG1724','ENG1222','L1S2'),\
+('TG1724','ICT1212','L1S2'),\
+('TG1724','ICT1222','L1S2'),\
+('TG1724','ICT1233','L1S2'),\
+('TG1724','ICT1242','L1S2'),\
+('TG1724','ICT1253','L1S2'),\
+('TG1724','TCS1212','L1S2'),\
+('TG1724','TCS1233','L1S2'),\
+\
+('TG1725','ENG1222','L1S2'),\
+('TG1725','ICT1212','L1S2'),\
+('TG1725','ICT1222','L1S2'),\
+('TG1725','ICT1233','L1S2'),\
+('TG1725','ICT1242','L1S2'),\
+('TG1725','ICT1253','L1S2'),\
+('TG1725','TCS1212','L1S2'),\
+('TG1725','TCS1233','L1S2'),\
+\
+('TG1726','ENG1222','L1S2'),\
+('TG1726','ICT1212','L1S2'),\
+('TG1726','ICT1222','L1S2'),\
+('TG1726','ICT1233','L1S2'),\
+('TG1726','ICT1242','L1S2'),\
+('TG1726','ICT1253','L1S2'),\
+('TG1726','TCS1212','L1S2'),\
+('TG1726','TCS1233','L1S2'),\
+\
+('TG1727','ENG1222','L1S2'),\
+('TG1727','ICT1212','L1S2'),\
+('TG1727','ICT1222','L1S2'),\
+('TG1727','ICT1233','L1S2'),\
+('TG1727','ICT1242','L1S2'),\
+('TG1727','ICT1253','L1S2'),\
+('TG1727','TCS1212','L1S2'),\
+('TG1727','TCS1233','L1S2'),\
+\
+('TG1728','ENG1222','L1S2'),\
+('TG1728','ICT1212','L1S2'),\
+('TG1728','ICT1222','L1S2'),\
+('TG1728','ICT1233','L1S2'),\
+('TG1728','ICT1242','L1S2'),\
+('TG1728','ICT1253','L1S2'),\
+('TG1728','TCS1212','L1S2'),\
+('TG1728','TCS1233','L1S2'),\
+\
+('TG1729','ENG1222','L1S2'),\
+('TG1729','ICT1212','L1S2'),\
+('TG1729','ICT1222','L1S2'),\
+('TG1729','ICT1233','L1S2'),\
+('TG1729','ICT1242','L1S2'),\
+('TG1729','ICT1253','L1S2'),\
+('TG1729','TCS1212','L1S2'),\
+('TG1729','TCS1233','L1S2');\
+\
+INSERT INTO student_subject (reg_no, subject_id, semester) VALUES\
+('TG1730','ENG1222','L1S2'),\
+('TG1730','ICT1212','L1S2'),\
+('TG1730','ICT1233','L1S2'),\
+('TG1731','ICT1222','L1S2'),\
+('TG1731','ICT1242','L1S2'),\
+('TG1732','ICT1253','L1S2'),\
+('TG1732','TCS1212','L1S2'),\
+('TG1733','ENG1222','L1S2'),\
+('TG1733','TCS1233','L1S2'),\
+('TG1734','ICT1233','L1S2'),\
+('TG1734','ICT1242','L1S2');\
+\
+\
+\
+\
+\
+\
+INSERT INTO marks (marks_id, subject_id, student_id, quiz_1, quiz_2, quiz_3, assignment, mid, end) VALUES\
+('MA001','ENG1222','TG1720',78.5,82.0,91.5,87.0,79.5,88.0),\
+('MA002','ICT1212','TG1720',72.5,81.0,76.5,83.0,78.0,90.5),\
+('MA003','ICT1222','TG1720',88.5,90.0,85.5,92.0,80.5,87.5),\
+('MA004','ICT1233','TG1720',75.0,80.5,78.5,85.0,90.0,82.5),\
+('MA005','ICT1242','TG1720',82.0,88.0,80.5,86.0,84.0,90.5),\
+('MA006','ICT1253','TG1720',90.5,85.5,88.0,92.0,87.0,91.5),\
+('MA007','TCS1212','TG1720',78.5,82.0,80.0,85.0,80.5,88.0),\
+('MA008','TCS1233','TG1720',85.0,87.5,90.0,88.0,84.0,90.0),\
+\
+('MA009','ENG1222','TG1721',80.5,82.0,85.0,88.0,87.0,90.0),\
+('MA010','ICT1212','TG1721',75.0,78.5,80.0,85.0,83.0,88.5),\
+('MA011','ICT1222','TG1721',82.0,85.5,80.5,87.0,85.0,89.0),\
+('MA012','ICT1233','TG1721',88.5,90.0,85.0,92.0,86.0,90.5),\
+('MA013','ICT1242','TG1721',80.0,82.0,85.0,88.0,83.5,87.0),\
+('MA014','ICT1253','TG1721',85.0,88.0,90.5,87.0,84.0,90.0),\
+('MA015','TCS1212','TG1721',78.0,80.5,75.0,85.0,82.0,88.0),\
+('MA016','TCS1233','TG1721',82.5,85.0,88.0,90.0,86.0,91.0),\
+\
+('MA017','ENG1222','TG1722',85.5,88.0,90.5,92.0,87.0,93.0),\
+('MA018','ICT1212','TG1722',80.5,82.0,85.0,88.0,84.0,90.0),\
+('MA019','ICT1222','TG1722',88.5,90.0,85.0,92.0,86.0,89.0),\
+('MA020','ICT1233','TG1722',82.0,85.5,88.0,90.0,83.0,87.5),\
+('MA021','ICT1242','TG1722',80.5,82.0,85.0,88.0,84.0,86.5),\
+('MA022','ICT1253','TG1722',85.0,88.0,90.5,87.0,86.0,90.0),\
+('MA023','TCS1212','TG1722',78.0,80.5,82.0,85.0,80.0,88.0),\
+('MA024','TCS1233','TG1722',82.5,85.0,88.0,90.0,86.0,91.0),\
+\
+('MA025','ENG1222','TG1723',80.5,82.0,85.0,88.0,87.0,90.0),\
+('MA026','ICT1212','TG1723',75.0,78.5,80.0,85.0,83.0,88.0),\
+('MA027','ICT1222','TG1723',82.0,85.5,80.5,87.0,85.0,89.0),\
+('MA028','ICT1233','TG1723',88.5,90.0,85.0,92.0,86.0,90.5),\
+('MA029','ICT1242','TG1723',80.0,82.0,85.0,88.0,83.5,87.0),\
+('MA030','ICT1253','TG1723',85.0,88.0,90.5,87.0,84.0,90.0),\
+('MA031','TCS1212','TG1723',78.0,80.5,75.0,85.0,82.0,88.0),\
+('MA032','TCS1233','TG1723',82.5,85.0,88.0,90.0,86.0,91.0),\
+\
+('MA033','ENG1222','TG1724',85.5,88.0,90.5,92.0,87.0,93.0),\
+('MA034','ICT1212','TG1724',80.5,82.0,85.0,88.0,84.0,90.0),\
+('MA035','ICT1222','TG1724',88.5,90.0,85.0,92.0,86.0,89.0),\
+('MA036','ICT1233','TG1724',82.0,85.5,88.0,90.0,83.0,87.5),\
+('MA037','ICT1242','TG1724',80.5,82.0,85.0,88.0,84.0,86.5),\
+('MA038','ICT1253','TG1724',85.0,88.0,90.5,87.0,86.0,90.0),\
+('MA039','TCS1212','TG1724',78.0,80.5,82.0,85.0,80.0,88.0),\
+('MA040','TCS1233','TG1724',82.5,85.0,88.0,90.0,86.0,91.0),\
+\
+('MA041','ENG1222','TG1725',80.5,82.0,85.0,88.0,87.0,90.0),\
+('MA042','ICT1212','TG1725',75.0,78.5,80.0,85.0,83.0,88.0),\
+('MA043','ICT1222','TG1725',82.0,85.5,80.5,87.0,85.0,89.0),\
+('MA044','ICT1233','TG1725',88.5,90.0,85.0,92.0,86.0,90.5),\
+('MA045','ICT1242','TG1725',80.0,82.0,85.0,88.0,83.5,87.0),\
+('MA046','ICT1253','TG1725',85.0,88.0,90.5,87.0,84.0,90.0),\
+('MA047','TCS1212','TG1725',78.0,80.5,75.0,85.0,82.0,88.0),\
+('MA048','TCS1233','TG1725',82.5,85.0,88.0,90.0,86.0,91.0),\
+\
+('MA049','ENG1222','TG1726',85.5,88.0,90.5,92.0,87.0,93.0),\
+('MA050','ICT1212','TG1726',80.5,82.0,85.0,88.0,84.0,90.0),\
+('MA051','ICT1222','TG1726',88.5,90.0,85.0,92.0,86.0,89.0),\
+('MA052','ICT1233','TG1726',82.0,85.5,88.0,90.0,83.0,87.5),\
+('MA053','ICT1242','TG1726',80.5,82.0,85.0,88.0,84.0,86.5),\
+('MA054','ICT1253','TG1726',85.0,88.0,90.5,87.0,86.0,90.0),\
+('MA055','TCS1212','TG1726',78.0,80.5,82.0,85.0,80.0,88.0),\
+('MA056','TCS1233','TG1726',82.5,85.0,88.0,90.0,86.0,91.0),\
+\
+('MA057','ENG1222','TG1727',80.5,82.0,85.0,88.0,87.0,90.0),\
+('MA058','ICT1212','TG1727',75.0,78.5,80.0,85.0,83.0,88.0),\
+('MA059','ICT1222','TG1727',82.0,85.5,80.5,87.0,85.0,89.0),\
+('MA060','ICT1233','TG1727',88.5,90.0,85.0,92.0,86.0,90.5),\
+('MA061','ICT1242','TG1727',80.0,82.0,85.0,88.0,83.5,87.0),\
+('MA062','ICT1253','TG1727',85.0,88.0,90.5,87.0,84.0,90.0),\
+('MA063','TCS1212','TG1727',78.0,80.5,75.0,85.0,82.0,88.0),\
+('MA064','TCS1233','TG1727',82.5,85.0,88.0,90.0,86.0,91.0),\
+\
+('MA065','ENG1222','TG1728',85.5,88.0,90.5,92.0,87.0,93.0),\
+('MA066','ICT1212','TG1728',80.5,82.0,85.0,88.0,84.0,90.0),\
+('MA067','ICT1222','TG1728',88.5,90.0,85.0,92.0,86.0,89.0),\
+('MA068','ICT1233','TG1728',82.0,85.5,88.0,90.0,83.0,87.5),\
+('MA069','ICT1242','TG1728',80.5,82.0,85.0,88.0,84.0,86.5),\
+('MA070','ICT1253','TG1728',85.0,88.0,90.5,87.0,86.0,90.0),\
+('MA071','TCS1212','TG1728',78.0,80.5,82.0,85.0,80.0,88.0),\
+('MA072','TCS1233','TG1728',82.5,85.0,88.0,90.0,86.0,91.0),\
+\
+('MA073','ENG1222','TG1729',80.5,82.0,85.0,88.0,87.0,90.0),\
+('MA074','ICT1212','TG1729',75.0,78.5,80.0,85.0,83.0,88.0),\
+('MA075','ICT1222','TG1729',82.0,85.5,80.5,87.0,85.0,89.0),\
+('MA076','ICT1233','TG1729',88.5,90.0,85.0,92.0,86.0,90.5),\
+('MA077','ICT1242','TG1729',80.0,82.0,85.0,88.0,83.5,87.0),\
+('MA078','ICT1253','TG1729',85.0,88.0,90.5,87.0,84.0,90.0),\
+('MA079','TCS1212','TG1729',78.0,80.5,75.0,85.0,82.0,88.0),\
+('MA080','TCS1233','TG1729',82.5,85.0,88.0,90.0,86.0,91.0);\
+\
+INSERT INTO marks(marks_id, subject_id, student_id, quiz_1, quiz_2, quiz_3, assignment, mid, end) VALUES\
+('MA081','ENG1222','TG1730',75.0,78.0,80.0,85.0,82.0,88.0),\
+('MA082','ICT1212','TG1730',70.0,75.0,78.0,80.0,77.0,85.0),\
+('MA083','ICT1222','TG1730',82.0,85.0,80.0,87.0,85.0,89.0),\
+('MA084','ICT1233','TG1730',88.0,90.0,85.0,92.0,86.0,90.0),\
+('MA085','TCS1233','TG1730',82.0,85.0,88.0,90.0,86.0,91.0),\
+\
+('MA086','ENG1222','TG1731',80.0,82.0,85.0,88.0,87.0,90.0),\
+('MA087','ICT1212','TG1731',75.0,78.0,80.0,85.0,83.0,88.0),\
+('MA088','ICT1222','TG1731',82.0,85.0,80.0,87.0,85.0,89.0),\
+('MA089','ICT1233','TG1731',88.0,90.0,85.0,92.0,86.0,90.0),\
+('MA090','TCS1233','TG1731',82.0,85.0,88.0,90.0,86.0,91.0),\
+\
+('MA091','ENG1222','TG1732',78.0,80.0,82.0,85.0,82.0,88.0),\
+('MA092','ICT1212','TG1732',70.0,75.0,78.0,80.0,77.0,85.0),\
+('MA093','ICT1222','TG1732',82.0,85.0,80.0,87.0,85.0,89.0),\
+('MA094','ICT1233','TG1732',88.0,90.0,85.0,92.0,86.0,90.0),\
+('MA095','TCS1233','TG1732',82.0,85.0,88.0,90.0,86.0,91.0),\
+\
+('MA096','ENG1222','TG1733',80.0,82.0,85.0,88.0,87.0,90.0),\
+('MA097','ICT1212','TG1733',75.0,78.0,80.0,85.0,83.0,88.0),\
+('MA098','ICT1222','TG1733',82.0,85.0,80.0,87.0,85.0,89.0),\
+('MA099','ICT1233','TG1733',88.0,90.0,85.0,92.0,86.0,90.0),\
+('MA100','TCS1233','TG1733',82.0,85.0,88.0,90.0,86.0,91.0),\
+\
+('MA101','ENG1222','TG1734',78.0,80.0,82.0,85.0,82.0,88.0),\
+('MA102','ICT1212','TG1734',70.0,75.0,78.0,80.0,77.0,85.0),\
+('MA103','ICT1222','TG1734',82.0,85.0,80.0,87.0,85.0,89.0),\
+('MA104','ICT1233','TG1734',88.0,90.0,85.0,92.0,86.0,90.0),\
+('MA105','TCS1233','TG1734',82.0,85.0,88.0,90.0,86.0,91.0);\
+\
+\
+\
+\
+\
+\
+INSERT INTO medical (medical_id, reg_no, details, submitted_date, checked_by) VALUES\
+('MED01','TG1720','Fever and cold','2025-01-15','Dr. Kamal Silva'),\
+('MED02','TG1720','Sprained ankle','2025-03-10','Dr. Binoy Perera'),\
+('MED03','TG1721','Food poisoning','2025-02-20','Dr. Nimal Fernando'),\
+('MED04','TG1722','Migraine attack','2025-04-05','Dr. Priya Jayasinghe'),\
+('MED05','TG1723','Stomach ache','2025-01-30','Dr. Anura Perera'),\
+('MED06','TG1723','Allergic reaction','2025-03-12','Dr. Kamal Silva'),\
+('MED07','TG1724','Back pain','2025-02-18','Dr. Binoy Perera'),\
+('MED08','TG1725','High fever','2025-04-01','Dr. Nimal Fernando'),\
+('MED09','TG1726','Sprained wrist','2025-03-15','Dr. Priya Jayasinghe'),\
+('MED10','TG1728','Flu and cold','2025-02-28','Dr. Anura Perera');\
+\
+\
+\
+\
+INSERT INTO technical_officer (tech_id, fname, lname, email, phone_no, address, dob) VALUES\
+('TE001', 'Vihan', 'Shalitha', 'yihan@gmail.com', '0723400001', '27 Jafna', '1989-04-25'),\
+('TE002', 'Nimal', 'Perera', 'nimalp@gmail.com', '0723400002', '15 Colombo', '1990-07-12'),\
+('TE003', 'Saman', 'Fernando', 'samanf@gmail.com', '0723400003', '50 Kandy', '1988-12-05'),\
+('TE004', 'Ravindu', 'Jayasinghe', 'ravinduj@gmail.com', '0723400004', '32 Galle', '1991-03-18'),\
+('TE005', 'Chamara', 'De Silva', 'chamarads@gmail.com', '0723400005', '10 Matara', '1987-09-30');\
+\
+\
+}
