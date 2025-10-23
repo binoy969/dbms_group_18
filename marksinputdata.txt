@@ -1,0 +1,1279 @@
+
+-- 01
+
+
+DELIMITER // 
+ 
+
+-- put tg number show all marks 
+CREATE PROCEDURE find_all_marks_student(IN tg VARCHAR(50))
+BEGIN
+    DECLARE v_quiz1,v_quiz2,v_quiz3,v_mid,v_end,v_assignment,v_bestquiz,v_final,v_quiz_sum,v_quiz_min,v_quiz_avg decimal(5,2);
+
+    SELECT 
+    s.reg_no,
+    CONCAT(s.fname, ' ',s.lname),
+    sub.subject_id,
+    sub.name,
+    m.quiz_1, m.quiz_2, m.quiz_3, m.assignment, m.mid, m.end
+    FROM marks m
+    INNER JOIN student s ON m.student_id = s.reg_no
+    INNER JOIN subject sub ON m.subject_id = sub.subject_id
+    WHERE s.reg_no = tg;
+
+END //
+
+
+
+
+
+-- 02
+
+-- put sub_id all marks. 
+
+DELIMITER //
+
+CREATE PROCEDURE find_all_marks_subject(IN subid CHAR(50))
+BEGIN
+    
+
+    -- Select all student marks for the subject and calculate
+    SELECT 
+        s.reg_no AS student_id,
+        CONCAT(s.fname, ' ', s.lname) AS student_name,
+        sub.subject_id,
+        sub.name AS subject_name,
+        m.quiz_1,
+        m.quiz_2,
+        m.quiz_3,
+        m.assignment,
+        m.mid,
+        m.end
+
+
+    FROM marks m
+    INNER JOIN student s ON m.student_id = s.reg_no
+    INNER JOIN subject sub ON m.subject_id = sub.subject_id
+    WHERE sub.subject_id = subid;
+
+END //
+
+DELIMITER ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- 03
+
+-- put tg sauject final marks and pass or fill
+
+DELIMITER //
+
+CREATE PROCEDURE find_summery_marks_student(IN tg VARCHAR(50))
+BEGIN
+    -- Calculate and display student marks summary
+    SELECT 
+        s.reg_no AS student_id,
+        CONCAT(s.fname, ' ', s.lname) AS student_name,
+        sub.subject_id,
+        sub.name AS subject_name,
+        
+
+        -- Average of best two quizzes
+        (
+            (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+             (m.quiz_1 + m.quiz_2 + m.quiz_3
+              - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+              - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+            ) / 2
+        ) AS best_two_quiz_avg,
+
+        -- CA mark calculation (max 40%)
+        (
+            (
+                (
+                    (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                     (m.quiz_1 + m.quiz_2 + m.quiz_3
+                      - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                      - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                    ) / 2 * 0.10
+                )
+                + (m.assignment * 0.05)
+                + (m.mid * 0.25)
+            )
+        ) AS CA_marks,
+
+        -- Final mark = CA (40%) + End exam (60%)
+        (
+            (
+                (
+                    (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                     (m.quiz_1 + m.quiz_2 + m.quiz_3
+                      - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                      - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                    ) / 2 * 0.10
+                )
+                + (m.assignment * 0.05)
+                + (m.mid * 0.25)
+            ) * 1.0  -- CA raw mark
+            + (m.end * 0.60)
+        ) AS final_mark,
+
+        -- Determine grade based on CA, End, and Final mark
+        CASE
+            WHEN s.state = "Repeat"
+            THEN 
+                CASE 
+                    WHEN (
+                (
+                    (
+                        (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                         (m.quiz_1 + m.quiz_2 + m.quiz_3
+                          - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                          - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                        ) / 2 * 0.10
+                    )
+                    + (m.assignment * 0.05)
+                    + (m.mid * 0.25)
+                ) < 16
+            ) THEN 'ECA'  -- CA fail
+            WHEN (m.end < 35) THEN 'EEND'  -- End exam fail
+            ELSE 
+                CASE 
+                    
+
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 45 THEN 'C'
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 40 THEN 'C-'
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 35 THEN 'D'
+                    
+                    ELSE 'F'
+                END
+        
+                END
+            
+            WHEN (
+                (
+                    (
+                        (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                         (m.quiz_1 + m.quiz_2 + m.quiz_3
+                          - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                          - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                        ) / 2 * 0.10
+                    )
+                    + (m.assignment * 0.05)
+                    + (m.mid * 0.25)
+                ) < 16
+            ) THEN 'ECA'  -- CA fail
+            WHEN (m.end < 35) THEN 'EEND'  -- End exam fail
+            ELSE 
+                CASE 
+                    
+
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 85 THEN 'A+'
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 75 THEN 'A'
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 70 THEN 'A-'
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 65 THEN 'B+'
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 60 THEN 'B'
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 55 THEN 'B-'
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 50 THEN 'C+'
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 45 THEN 'C'
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 40 THEN 'C-'
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 35 THEN 'D'
+                    ELSE 'F'
+                END
+        END AS grade
+
+    FROM marks m
+    INNER JOIN student s ON m.student_id = s.reg_no
+    INNER JOIN subject sub ON m.subject_id = sub.subject_id
+    WHERE s.reg_no = tg;
+END //
+
+DELIMITER ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- 04
+
+-- input stubjecctid all student marks sumery pass or fail
+
+
+DELIMITER //
+
+CREATE PROCEDURE find_summery_marks_subject(IN sub_id VARCHAR(50))
+BEGIN
+    -- Calculate and display student marks summary
+    SELECT 
+        s.reg_no AS student_id,
+        CONCAT(s.fname, ' ', s.lname) AS student_name,
+        sub.subject_id,
+        sub.name AS subject_name,
+        
+
+        -- Average of best two quizzes
+        (
+            (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+             (m.quiz_1 + m.quiz_2 + m.quiz_3
+              - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+              - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+            ) / 2
+        ) AS best_two_quiz_avg,
+
+        -- CA mark calculation (max 40%)
+        (
+            (
+                (
+                    (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                     (m.quiz_1 + m.quiz_2 + m.quiz_3
+                      - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                      - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                    ) / 2 * 0.10
+                )
+                + (m.assignment * 0.05)
+                + (m.mid * 0.25)
+            )
+        ) AS CA_marks,
+
+        -- Final mark = CA (40%) + End exam (60%)
+        (
+            (
+                (
+                    (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                     (m.quiz_1 + m.quiz_2 + m.quiz_3
+                      - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                      - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                    ) / 2 * 0.10
+                )
+                + (m.assignment * 0.05)
+                + (m.mid * 0.25)
+            ) * 1.0  -- CA raw mark
+            + (m.end * 0.60)
+        ) AS final_mark,
+
+        -- Determine grade based on CA, End, and Final mark
+        CASE
+            WHEN s.state = "Repeat"
+            THEN 
+                CASE 
+                    WHEN (
+                (
+                    (
+                        (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                         (m.quiz_1 + m.quiz_2 + m.quiz_3
+                          - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                          - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                        ) / 2 * 0.10
+                    )
+                    + (m.assignment * 0.05)
+                    + (m.mid * 0.25)
+                ) < 16
+            ) THEN 'ECA'  -- CA fail
+            WHEN (m.end < 35) THEN 'EEND'  -- End exam fail
+            ELSE 
+                CASE 
+                    
+
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 45 THEN 'C'
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 40 THEN 'C-'
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 35 THEN 'D'
+                    
+                    ELSE 'F'
+                END
+        
+                END
+            
+            WHEN (
+                (
+                    (
+                        (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                         (m.quiz_1 + m.quiz_2 + m.quiz_3
+                          - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                          - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                        ) / 2 * 0.10
+                    )
+                    + (m.assignment * 0.05)
+                    + (m.mid * 0.25)
+                ) < 16
+            ) THEN 'ECA'  -- CA fail
+            WHEN (m.end < 35) THEN 'EEND'  -- End exam fail
+            ELSE 
+                CASE 
+                    
+
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 85 THEN 'A+'
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 75 THEN 'A'
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 70 THEN 'A-'
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 65 THEN 'B+'
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 60 THEN 'B'
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 55 THEN 'B-'
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 50 THEN 'C+'
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 45 THEN 'C'
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 40 THEN 'C-'
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 35 THEN 'D'
+                    ELSE 'F'
+                END
+        END AS grade
+
+    FROM marks m
+    INNER JOIN student s ON m.student_id = s.reg_no
+    INNER JOIN subject sub ON m.subject_id = sub.subject_id
+    WHERE sub.subject_id = sub_id;
+END //
+
+DELIMITER ;
+
+
+
+
+
+
+
+
+
+-- 05
+
+-- input tg and sub_id all marks
+
+
+DELIMITER // 
+ 
+CREATE PROCEDURE find_all_marks_student_subject(
+    IN
+    sub_id VARCHAR(50),
+     tg VARCHAR(50)
+     )
+BEGIN
+    DECLARE v_quiz1,v_quiz2,v_quiz3,v_mid,v_end,v_assignment,v_bestquiz,v_final,v_quiz_sum,v_quiz_min,v_quiz_avg decimal(5,2);
+
+    SELECT 
+    s.reg_no,
+    CONCAT(s.fname, ' ',s.lname),
+    sub.subject_id,
+    sub.name,
+    m.quiz_1, m.quiz_2, m.quiz_3, m.assignment, m.mid, m.end
+    FROM marks m
+    INNER JOIN student s ON m.student_id = s.reg_no
+    INNER JOIN subject sub ON m.subject_id = sub.subject_id
+    WHERE s.reg_no = tg;
+
+END //
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- 06
+
+-- input tg and subject final grade 
+
+
+
+DELIMITER //
+
+CREATE PROCEDURE find_marks_student_one_subject(
+    IN sub_id VARCHAR(50),
+    IN tg VARCHAR(50)
+)
+BEGIN
+    -- Calculate and display student marks summary
+    SELECT 
+        s.reg_no AS student_id,
+        CONCAT(s.fname, ' ', s.lname) AS student_name,
+        sub.subject_id,
+        sub.name AS subject_name,
+        
+
+        -- Average of best two quizzes
+        (
+            (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+             (m.quiz_1 + m.quiz_2 + m.quiz_3
+              - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+              - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+            ) / 2
+        ) AS best_two_quiz_avg,
+
+        -- CA mark calculation (max 40%)
+        (
+            (
+                (
+                    (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                     (m.quiz_1 + m.quiz_2 + m.quiz_3
+                      - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                      - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                    ) / 2 * 0.10
+                )
+                + (m.assignment * 0.05)
+                + (m.mid * 0.25)
+            )
+        ) AS CA_marks,
+
+        -- Final mark = CA (40%) + End exam (60%)
+        (
+            (
+                (
+                    (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                     (m.quiz_1 + m.quiz_2 + m.quiz_3
+                      - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                      - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                    ) / 2 * 0.10
+                )
+                + (m.assignment * 0.05)
+                + (m.mid * 0.25)
+            ) * 1.0  -- CA raw mark
+            + (m.end * 0.60)
+        ) AS final_mark,
+
+        -- Determine grade based on CA, End, and Final mark
+        CASE
+            WHEN s.state = "Repeat"
+            THEN 
+                CASE 
+                    WHEN (
+                (
+                    (
+                        (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                         (m.quiz_1 + m.quiz_2 + m.quiz_3
+                          - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                          - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                        ) / 2 * 0.10
+                    )
+                    + (m.assignment * 0.05)
+                    + (m.mid * 0.25)
+                ) < 16
+            ) THEN 'ECA'  -- CA fail
+            WHEN (m.end < 35) THEN 'EEND'  -- End exam fail
+            ELSE 
+                CASE 
+                    
+
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 45 THEN 'C'
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 40 THEN 'C-'
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 35 THEN 'D'
+                    
+                    ELSE 'F'
+                END
+        
+                END
+            
+            WHEN (
+                (
+                    (
+                        (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                         (m.quiz_1 + m.quiz_2 + m.quiz_3
+                          - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                          - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                        ) / 2 * 0.10
+                    )
+                    + (m.assignment * 0.05)
+                    + (m.mid * 0.25)
+                ) < 16
+            ) THEN 'ECA'  -- CA fail
+            WHEN (m.end < 35) THEN 'EEND'  -- End exam fail
+            ELSE 
+                CASE 
+                    
+
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 85 THEN 'A+'
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 75 THEN 'A'
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 70 THEN 'A-'
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 65 THEN 'B+'
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 60 THEN 'B'
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 55 THEN 'B-'
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 50 THEN 'C+'
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 45 THEN 'C'
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 40 THEN 'C-'
+                    WHEN (
+                        (
+                            (
+                                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                                ) / 2 * 0.10
+                            )
+                            + (m.assignment * 0.05)
+                            + (m.mid * 0.25)
+                        ) + (m.end * 0.60)
+                    ) >= 35 THEN 'D'
+                    ELSE 'F'
+                END
+        END AS grade
+
+    FROM marks m
+    INNER JOIN student s ON m.student_id = s.reg_no
+    INNER JOIN subject sub ON m.subject_id = sub.subject_id
+    WHERE sub.subject_id = sub_id AND s.reg_no = tg;
+END //
+
+DELIMITER ;
+
+
+
+
+
+
+
+
+
+
+
+
+-- 07
+
+
+-- input sub_id all student ca marks samary
+
+
+
+
+
+
+DELIMITER //
+
+CREATE PROCEDURE find_summery_ca_marks_subject(IN subid CHAR(50))
+BEGIN
+    -- Variables for calculations
+    DECLARE v_quiz1 DECIMAL(5,2);
+    DECLARE v_quiz2 DECIMAL(5,2);
+    DECLARE v_quiz3 DECIMAL(5,2);
+    DECLARE v_assignment DECIMAL(5,2);
+    DECLARE v_mid DECIMAL(5,2);
+    DECLARE v_end DECIMAL(5,2);
+    DECLARE v_bestquiz DECIMAL(5,2);
+    DECLARE v_CA DECIMAL(5,2);
+    DECLARE v_final DECIMAL(5,2);
+
+    -- Select all student marks for the subject and calculate
+    SELECT 
+        s.reg_no AS student_id,
+        CONCAT(s.fname, ' ', s.lname) AS student_name,
+        sub.subject_id,
+        sub.name AS subject_name,
+        m.quiz_1,
+        m.quiz_2,
+        m.quiz_3,
+        m.assignment,
+        
+
+        -- Average of best two quizzes
+        ( (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+            (m.quiz_1 + m.quiz_2 + m.quiz_3
+             - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+             - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+          ) / 2
+        ) AS best_two_quiz_avg,
+
+        -- CA calculation = 10% quiz + 5% assignment + 25% mid
+        (
+            (
+                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3)
+                 )
+                ) / 2 * 0.10
+            )
+            + (m.assignment * 0.05)
+            + (m.mid * 0.25)
+        ) AS CA_marks
+
+       
+
+    FROM marks m
+    INNER JOIN student s ON m.student_id = s.reg_no
+    INNER JOIN subject sub ON m.subject_id = sub.subject_id
+    WHERE sub.subject_id = subid;
+
+END //
+
+DELIMITER ;
+
+
+
+
+
+
+
+
+
+
+
+-- 08
+
+-- input sub_id and student_id ca marks and pss or fail
+
+
+
+
+DELIMITER //
+
+CREATE PROCEDURE find_summery_ca_pass_fail_subject(IN
+ subid CHAR(50),
+ tg VARCHAR(50)
+ )
+BEGIN
+    -- Variables for calculations
+    DECLARE v_quiz1 DECIMAL(5,2);
+    DECLARE v_quiz2 DECIMAL(5,2);
+    DECLARE v_quiz3 DECIMAL(5,2);
+    DECLARE v_assignment DECIMAL(5,2);
+    DECLARE v_mid DECIMAL(5,2);
+    DECLARE v_end DECIMAL(5,2);
+    DECLARE v_bestquiz DECIMAL(5,2);
+    DECLARE v_CA DECIMAL(5,2);
+    DECLARE v_final DECIMAL(5,2);
+
+    -- Select all student marks for the subject and calculate
+    SELECT 
+        s.reg_no AS student_id,
+        CONCAT(s.fname, ' ', s.lname) AS student_name,
+        sub.subject_id,
+        sub.name AS subject_name,
+        m.quiz_1,
+        m.quiz_2,
+        m.quiz_3,
+        m.assignment,
+        
+
+        -- Average of best two quizzes
+        ( (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+            (m.quiz_1 + m.quiz_2 + m.quiz_3
+             - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+             - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+          ) / 2
+        ) AS best_two_quiz_avg,
+
+        -- CA calculation = 10% quiz + 5% assignment + 25% mid
+        (
+            (
+                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3)
+                 )
+                ) / 2 * 0.10
+            )
+            + (m.assignment * 0.05)
+            + (m.mid * 0.25)
+        ) AS CA_marks,
+
+        CASE 
+            WHEN (
+                (
+                    (
+                        (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                         (m.quiz_1 + m.quiz_2 + m.quiz_3
+                          - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                          - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                        ) / 2 * 0.10
+                    )
+                    + (m.assignment * 0.05)
+                    + (m.mid * 0.25)
+                ) < 16
+            ) THEN 'ECA' 
+            ELSE 'CA PASS'
+        END AS CA_E
+
+       
+
+    FROM marks m
+    INNER JOIN student s ON m.student_id = s.reg_no
+    INNER JOIN subject sub ON m.subject_id = sub.subject_id
+    WHERE sub.subject_id = subid AND s.reg_no = tg;
+
+END //
+
+DELIMITER ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- 09 
+
+-- input tg all subject CA find_summery_ca_marks_subject
+
+
+
+
+
+
+DELIMITER //
+
+CREATE PROCEDURE find_summery_ca_pass_fail_subject(IN
+ tg VARCHAR(50)
+ )
+BEGIN
+    -- Variables for calculations
+    DECLARE v_quiz1 DECIMAL(5,2);
+    DECLARE v_quiz2 DECIMAL(5,2);
+    DECLARE v_quiz3 DECIMAL(5,2);
+    DECLARE v_assignment DECIMAL(5,2);
+    DECLARE v_mid DECIMAL(5,2);
+    DECLARE v_end DECIMAL(5,2);
+    DECLARE v_bestquiz DECIMAL(5,2);
+    DECLARE v_CA DECIMAL(5,2);
+    DECLARE v_final DECIMAL(5,2);
+
+    -- Select all student marks for the subject and calculate
+    SELECT 
+        s.reg_no AS student_id,
+        CONCAT(s.fname, ' ', s.lname) AS student_name,
+        sub.subject_id,
+        sub.name AS subject_name,
+        m.quiz_1,
+        m.quiz_2,
+        m.quiz_3,
+        m.assignment,
+        
+
+        -- Average of best two quizzes
+        ( (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+            (m.quiz_1 + m.quiz_2 + m.quiz_3
+             - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+             - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+          ) / 2
+        ) AS best_two_quiz_avg,
+
+        -- CA calculation = 10% quiz + 5% assignment + 25% mid
+        (
+            (
+                (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                 (m.quiz_1 + m.quiz_2 + m.quiz_3
+                  - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                  - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3)
+                 )
+                ) / 2 * 0.10
+            )
+            + (m.assignment * 0.05)
+            + (m.mid * 0.25)
+        ) AS CA_marks,
+
+        CASE 
+            WHEN (
+                (
+                    (
+                        (GREATEST(m.quiz_1, m.quiz_2, m.quiz_3) +
+                         (m.quiz_1 + m.quiz_2 + m.quiz_3
+                          - LEAST(m.quiz_1, m.quiz_2, m.quiz_3)
+                          - GREATEST(m.quiz_1, m.quiz_2, m.quiz_3))
+                        ) / 2 * 0.10
+                    )
+                    + (m.assignment * 0.05)
+                    + (m.mid * 0.25)
+                ) < 16
+            ) THEN 'ECA' 
+            ELSE 'CA PASS'
+        END AS CA_E
+
+       
+
+    FROM marks m
+    INNER JOIN student s ON m.student_id = s.reg_no
+    INNER JOIN subject sub ON m.subject_id = sub.subject_id
+    WHERE sub.subject_id = subid AND s.reg_no = tg;
+
+END //
+
+DELIMITER ;
+
+
