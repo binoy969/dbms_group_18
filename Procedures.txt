@@ -1,0 +1,178 @@
+ -- Attendance percentage  one sub one student --
+
+DELIMITER //
+CREATE PROCEDURE attendance_by_id(
+IN id VARCHAR(50),
+IN sub_id VARCHAR(50)
+)
+BEGIN
+DECLARE total_days INT;
+DECLARE attend INT;
+DECLARE percentage DECIMAL(5,2);
+
+SELECT COUNT(attendance) INTO total_days
+FROM attendance
+WHERE reg_no=id AND subject_id = sub_id;
+
+
+SELECT COUNT(attendance) INTO attend
+FROM attendance
+WHERE attendance=1 AND reg_no = id AND subject_id = sub_id;
+
+SET percentage = ((attend/total_days)*100);
+SELECT id,sub_id,percentage;
+
+END;
+
+DELIMITER;
+
+------------------------------------------------------------------------------------
+
+-- Give sub id to show summarized attendance percentage --
+
+DELIMITER //
+
+CREATE PROCEDURE calculate_attendance_percentage(IN p_subject_id VARCHAR(50))
+BEGIN
+    SELECT 
+        a.reg_no,
+        s.reg_no,
+        p_subject_id AS subject_id,
+        COUNT(*) AS total_classes,
+        SUM(a.attendance) AS attended_classes,
+        ROUND((SUM(a.attendance) / COUNT(*)) * 100, 2) AS attendance_percentage
+    FROM attendance a
+    JOIN student s ON a.reg_no = s.reg_no
+    WHERE a.subject_id = p_subject_id
+    GROUP BY a.reg_no, s.reg_no;
+END //
+
+DELIMITER ;
+
+
+-----------------------------------------------------------------------------------
+
+-- Show the eligibility of students by giving subject id --
+
+DELIMITER //
+
+CREATE PROCEDURE calculate_attendance_percentage_eligibility_12(IN p_subject_id VARCHAR(50))
+BEGIN
+    SELECT
+        a.reg_no,
+        s.reg_no,
+        p_subject_id AS subject_id,
+        COUNT(*) AS total_classes,
+        SUM(a.attendance) AS attended_classes,
+        ROUND((SUM(a.attendance) / COUNT(*)) * 100, 2) AS attendance_percentage,
+        IF(ROUND((SUM(a.attendance) / COUNT(*)) * 100, 2) >= 80, 'Eligible', 'Not Eligible') AS Eligibility
+    FROM attendance a
+    JOIN student s ON a.reg_no = s.reg_no
+    WHERE a.subject_id = p_subject_id
+    GROUP BY a.reg_no, s.reg_no;
+END //
+
+DELIMITER ;
+
+----------------------------------------------------------------------------------
+
+-- Separately shows eligibility for each course code by giving reg_no and sub_id --
+
+DELIMITER //
+
+CREATE PROCEDURE calculate_attendance_percentage_course(
+    IN p_reg_no VARCHAR(50),
+    IN p_subject_id VARCHAR(50)
+)
+BEGIN
+    SELECT
+        a.reg_no,
+        a.subject_id,
+        COUNT(*) AS total_classes,
+        SUM(a.attendance) AS attended_classes,
+        ROUND((SUM(a.attendance) / COUNT(*)) * 100, 2) AS attendance_percentage,
+        IF(ROUND((SUM(a.attendance) / COUNT(*)) * 100, 2) >= 80, 'Eligible', 'Not Eligible') AS Eligibility
+    FROM attendance a
+    WHERE a.reg_no = p_reg_no
+      AND a.subject_id = p_subject_id
+    GROUP BY a.reg_no, a.subject_id;
+END //
+
+DELIMITER ;
+
+
+-----------------------------------------------------------------------------------
+
+
+-- when reg_no and sub_id given shows if he eligible for end exam --
+
+DELIMITER //
+
+CREATE PROCEDURE check_individual_eligibility1(
+    IN p_student_id VARCHAR(50),
+    IN p_subject_id VARCHAR(50)
+)
+BEGIN
+    DECLARE attendance_percentage DECIMAL(5,2);
+    DECLARE ca_marks DECIMAL(6,2);
+    DECLARE eligibility_status VARCHAR(20);
+
+    
+    SELECT 
+        ROUND((SUM(attendance) / COUNT(*)) * 100, 2)
+    INTO attendance_percentage
+    FROM attendance
+    WHERE reg_no = p_student_id AND subject_id = p_subject_id;
+
+    
+    SELECT 
+        (((quiz_1 + quiz_2 + quiz_3) - LEAST(quiz_1, quiz_2, quiz_3))/ 2 * 0.1) + (assignment * 0.05) + (mid * 0.25)
+    INTO ca_marks
+    FROM marks
+    WHERE student_id = p_student_id AND subject_id = p_subject_id
+    LIMIT 1;
+
+    
+    IF attendance_percentage >= 80 AND ca_marks >= 40 * 0.4 THEN
+        SET eligibility_status = 'Eligible';
+    ELSE
+        SET eligibility_status = 'Not Eligible';
+    END IF;
+
+    
+    SELECT 
+        p_student_id AS student_id,
+        p_subject_id AS subject_id,
+        attendance_percentage,
+        ca_marks,
+        eligibility_status AS Eligibility;
+END //
+
+DELIMITER ;
+
+
+----------------------------------------------------------------------------------
+
+-- Update the status of attendance table according to the submitted medicals --
+
+DELIMITER //
+
+CREATE PROCEDURE update_attendance_for_medicals()
+BEGIN
+    UPDATE attendance a
+    JOIN medical m 
+      ON a.reg_no = m.reg_no
+     AND a.subject_id = m.subject_id
+     AND a.atten_date <= m.submitted_date   -- optional condition: only before submission
+    SET a.attendance = 1
+    WHERE a.attendance = 0;
+END //
+
+DELIMITER ;
+
+
+
+---------------------------------------------------------------------------------
+
+CREATE PROCEDURE ;
+DROP PROCEDURE ;
