@@ -1,0 +1,58 @@
+CREATE VIEW lecturer_info AS
+SELECT l.lecturer_id,
+CONCAT (l.fname,' ',l.lname) AS Lec_name,
+l.email,
+l.phone_no,
+lc.course_id,
+S.name
+FROM lecturer AS l
+JOIN lecturer_course lc On lc.lecturer_id = l.lecturer_id
+JOIN subject s ON s.subject_id = lc.course_id;
+
+
+
+CREATE VIEW student_subject_info AS
+SELECT st.reg_no,
+CONCAT(st.fname,'',st.lname) AS Student_Name,
+ss.subject_id,
+s.name
+FROM student st
+JOIN student_subject ss ON ss.reg_no = st.reg_no
+JOIN subject s ON ss.subject_id = s.subject_id
+WHERE st.reg_no BETWEEN 'TG1720' AND 'TG1729';  
+
+
+
+CREATE VIEW marks_info AS
+SELECT m.marks_id,
+m.subject_id,
+sb.name,
+m.student_id,
+m.quiz_1,
+m.quiz_2,
+m.quiz_3,
+m.assignment,
+m.mid,
+m.end
+FROM marks m 
+JOIN subject sb ON m.subject_id = sb.subject_id;
+
+
+
+
+CREATE VIEW exam_details AS
+SELECT
+e.student_id,
+e.subject_id,
+s.name,
+e.exam_date,
+e.exam_type
+FROM exam e
+JOIN subject s ON e.subject_id = s.subject_id;
+
+
+
+SELECT * FROM lecturer_info;
+SELECT * FROM student_subject_info;
+SELECT * FROM marks_info;
+SELECT * FROM exam_details;
