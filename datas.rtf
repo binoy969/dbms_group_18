@@ -235,6 +235,8 @@ JOIN (\
   UNION SELECT 'TCS1233', '2025-06-22', 'End Exam', 'Final written test'\
 ) e;\
 \
+ALTER TABLE exam\
+ DROP COLUMN notes;\
 \
 INSERT INTO marks (marks_id, subject_id, student_id, quiz_1, quiz_2, quiz_3, assignment, mid, end) VALUES\
 ('MA001','ENG1222','TG1720',78.5,82.0,91.5,87.0,79.5,88.0),\
