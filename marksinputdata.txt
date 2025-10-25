@@ -688,10 +688,11 @@ BEGIN
     FROM marks m
     INNER JOIN student s ON m.student_id = s.reg_no
     INNER JOIN subject sub ON m.subject_id = sub.subject_id
-    WHERE s.reg_no = tg;
+    WHERE s.reg_no = tg AND sub.subject_id = sub_id;
 
 END //
 
+DELIMITER ;
 
 
 
@@ -1097,7 +1098,7 @@ DELIMITER ;
 
 DELIMITER //
 
-CREATE PROCEDURE find_summery_ca_pass_fail_subject(IN
+CREATE PROCEDURE find_student_ca_pass_fail_subject(IN
  subid CHAR(50),
  tg VARCHAR(50)
  )
@@ -1200,7 +1201,7 @@ DELIMITER ;
 DELIMITER //
 
 CREATE PROCEDURE find_summery_ca_pass_fail_subject(IN
- tg VARCHAR(50)
+ subid VARCHAR(50)
  )
 BEGIN
     -- Variables for calculations
@@ -1270,7 +1271,7 @@ BEGIN
     FROM marks m
     INNER JOIN student s ON m.student_id = s.reg_no
     INNER JOIN subject sub ON m.subject_id = sub.subject_id
-    WHERE sub.subject_id = subid AND s.reg_no = tg;
+    WHERE sub.subject_id = subid;
 
 END //
 
