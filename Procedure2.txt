@@ -1,0 +1,47 @@
+2.	The (get_eligibility) procedure checks student’s CA eligibility based on marks (≥40%) and attendance (≥80%).
+•	If no student ID is given=shows batch summary of eligible students per subject.
+•	If a student ID is given=shows that student’s individual eligibility for each subject.
+
+DELIMITER //
+CREATE PROCEDURE get_eligibility(IN reg_no_param VARCHAR(50))
+BEGIN
+    IF reg_no_param IS NULL THEN
+        SELECT 
+            m.subject_id,
+            COUNT(DISTINCT m.student_id) AS total_students,
+            SUM(CASE 
+                    WHEN (AVG(m.quiz_1 + m.quiz_2 + m.quiz_3 + m.assignment + m.mid)/5) >= 40
+                         AND (SUM(a.attendance)/COUNT(a.attendance_id))*100 >= 80
+                    THEN 1 ELSE 0 
+                END) AS eligible_count,
+            (SUM(CASE 
+                    WHEN (AVG(m.quiz_1 + m.quiz_2 + m.quiz_3 + m.assignment + m.mid)/5) >= 40
+                         AND (SUM(a.attendance)/COUNT(a.attendance_id))*100 >= 80
+                    THEN 1 ELSE 0 
+                END) / COUNT(DISTINCT m.student_id)) * 100 AS eligible_percentage
+        FROM marks m
+        JOIN attendance a
+          ON m.student_id = a.reg_no
+         AND m.subject_id = a.subject_id
+        GROUP BY m.subject_id;
+    ELSE
+        SELECT 
+            m.subject_id,
+            AVG(m.quiz_1 + m.quiz_2 + m.quiz_3 + m.assignment + m.mid)/5 AS ca_mark,
+            (SUM(a.attendance)/COUNT(a.attendance_id))*100 AS attendance_percent,
+            CASE
+                WHEN (AVG(m.quiz_1 + m.quiz_2 + m.quiz_3 + m.assignment + m.mid)/5) >= 40
+                     AND (SUM(a.attendance)/COUNT(a.attendance_id))*100 >= 80
+                THEN 'Eligible'
+                ELSE 'Not Eligible'
+            END AS status
+        FROM marks m
+        JOIN attendance a
+          ON m.student_id = a.reg_no
+         AND m.subject_id = a.subject_id
+        WHERE m.student_id = reg_no_param
+        GROUP BY m.subject_id;
+    END IF;
+END //
+
+DELIMITER ;
