@@ -1,0 +1,170 @@
+3.	The (get_grade1) procedure calculates and displays student’s final grades.
+•	If no student ID is given=shows average total marks for each subject (batch summary).
+•	If a student ID is given=shows that student’s total marks and letter grades (A+ to F) for every subject.
+
+DELIMITER //
+
+CREATE PROCEDURE get_grade1(IN reg_no_param VARCHAR(50))
+BEGIN
+    IF reg_no_param IS NULL THEN
+        SELECT subject_id,
+               AVG( ((quiz_1 + quiz_2 + quiz_3)/3 * 0.1) + (assignment * 0.1) + (mid * 0.2) + (end * 0.6) ) AS avg_total
+        FROM marks
+        GROUP BY subject_id;
+
+    
+    ELSE
+        SELECT subject_id,
+               total_mark,
+               CASE
+                   WHEN total_mark >= 90 THEN 'A+'
+                   WHEN total_mark >= 85 THEN 'A'
+                   WHEN total_mark >= 80 THEN 'A-'
+                   WHEN total_mark >= 75 THEN 'B+'
+                   WHEN total_mark >= 70 THEN 'B'
+                   WHEN total_mark >= 65 THEN 'B-'
+                   WHEN total_mark >= 60 THEN 'C+'
+                   WHEN total_mark >= 55 THEN 'C'
+                   WHEN total_mark >= 50 THEN 'C-'
+                   WHEN total_mark >= 45 THEN 'D+'
+                   WHEN total_mark >= 40 THEN 'D'
+                   ELSE 'F'
+               END AS grade
+        FROM (
+            SELECT subject_id,
+                   (( (quiz_1 + quiz_2 + quiz_3)/3 * 0.1 ) + (assignment * 0.1) + (mid * 0.2) + (end * 0.6)) AS total_mark
+            FROM marks
+            WHERE student_id = reg_no_param
+        ) AS t;
+    END IF;
+END //
+
+DELIMITER ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+4.	The (get_gpa_individual) procedure calculates a student’s GPA details for each subject.
+It shows the subject ID, total mark, letter grade, grade point (GP), and credit value based on that student’s performance.
+
+
+DELIMITER //
+
+CREATE PROCEDURE get_gpa_individual(IN reg_no_param VARCHAR(50))
+BEGIN
+    SELECT m.subject_id,
+           total_mark,
+           CASE
+               WHEN total_mark >= 90 THEN 'A+'
+               WHEN total_mark >= 85 THEN 'A'
+               WHEN total_mark >= 80 THEN 'A-'
+               WHEN total_mark >= 75 THEN 'B+'
+               WHEN total_mark >= 70 THEN 'B'
+               WHEN total_mark >= 65 THEN 'B-'
+               WHEN total_mark >= 60 THEN 'C+'
+               WHEN total_mark >= 55 THEN 'C'
+               WHEN total_mark >= 50 THEN 'C-'
+               WHEN total_mark >= 45 THEN 'D+'
+               WHEN total_mark >= 40 THEN 'D'
+               ELSE 'F'
+           END AS grade,
+           CASE
+               WHEN total_mark >= 90 THEN 4.2
+               WHEN total_mark >= 85 THEN 4.0
+               WHEN total_mark >= 80 THEN 3.7
+               WHEN total_mark >= 75 THEN 3.3
+               WHEN total_mark >= 70 THEN 3.0
+               WHEN total_mark >= 65 THEN 2.7
+               WHEN total_mark >= 60 THEN 2.3
+               WHEN total_mark >= 55 THEN 2.0
+               WHEN total_mark >= 50 THEN 1.7
+               WHEN total_mark >= 45 THEN 1.3
+               WHEN total_mark >= 40 THEN 1.0
+               ELSE 0.0
+           END AS gp,
+           s.credits
+    FROM (
+        SELECT *,
+               (( (quiz_1 + quiz_2 + quiz_3)/3 * 0.1 ) 
+                + (assignment*0.1) + (mid*0.2) + (end*0.6)) AS total_mark
+        FROM marks
+        WHERE student_id = reg_no_param
+    ) AS m
+    JOIN subject s ON m.subject_id = s.subject_id;
+END //
+DELIMITER ;
+
+
+
+
+
+
+
+
+
+
+5.	The (get_subject_gpa_details) procedure calculates GPA details for all students in a specific subject.
+It shows each student’s ID, total marks, letter grade, grade point (GP) and the subject’s credit value, helping analyze performance across that subject.
+
+DELIMITER //
+
+CREATE PROCEDURE get_subject_gpa_details(IN sub_id VARCHAR(50))
+BEGIN
+    SELECT 
+        m.student_id,
+        m.subject_id,
+        total_mark,
+        CASE
+            WHEN total_mark >= 90 THEN 'A+'
+            WHEN total_mark >= 85 THEN 'A'
+            WHEN total_mark >= 80 THEN 'A-'
+            WHEN total_mark >= 75 THEN 'B+'
+            WHEN total_mark >= 70 THEN 'B'
+            WHEN total_mark >= 65 THEN 'B-'
+            WHEN total_mark >= 60 THEN 'C+'
+            WHEN total_mark >= 55 THEN 'C'
+            WHEN total_mark >= 50 THEN 'C-'
+            WHEN total_mark >= 45 THEN 'D+'
+            WHEN total_mark >= 40 THEN 'D'
+            ELSE 'F'
+        END AS grade,
+        CASE
+            WHEN total_mark >= 90 THEN 4.2
+            WHEN total_mark >= 85 THEN 4.0
+            WHEN total_mark >= 80 THEN 3.7
+            WHEN total_mark >= 75 THEN 3.3
+            WHEN total_mark >= 70 THEN 3.0
+            WHEN total_mark >= 65 THEN 2.7
+            WHEN total_mark >= 60 THEN 2.3
+            WHEN total_mark >= 55 THEN 2.0
+            WHEN total_mark >= 50 THEN 1.7
+            WHEN total_mark >= 45 THEN 1.3
+            WHEN total_mark >= 40 THEN 1.0
+            ELSE 0.0
+        END AS gp,
+        s.credits
+    FROM (
+        SELECT *,
+               (( (quiz_1 + quiz_2 + quiz_3)/3 * 0.1 )
+                + (assignment*0.1) + (mid*0.2) + (end*0.6)) AS total_mark
+        FROM marks
+        WHERE subject_id = sub_id
+    ) AS m
+    JOIN subject s ON m.subject_id = s.subject_id
+    ORDER BY m.student_id;
+END //
+
+DELIMITER ;
+
+
