@@ -1,0 +1,25 @@
+1.	The (get_marks) procedure displays student’s marks.
+•	If no student ID is given=shows average marks for each subject (batch summary).
+•	If a student ID is given=shows that student’s individual marks for all subjects.
+
+DELIMITER //
+CREATE PROCEDURE get_marks(IN reg_no_param VARCHAR(50))
+BEGIN
+    IF reg_no_param IS NULL THEN
+        SELECT subject_id,
+               AVG(quiz_1) AS avg_quiz1,
+               AVG(quiz_2) AS avg_quiz2,
+               AVG(quiz_3) AS avg_quiz3,
+               AVG(assignment) AS avg_assign,
+               AVG(mid) AS avg_mid,
+               AVG(end) AS avg_end
+        FROM marks
+        GROUP BY subject_id;
+    ELSE
+        SELECT subject_id, quiz_1, quiz_2, quiz_3, assignment, mid, end
+        FROM marks
+        WHERE student_id = reg_no_param;
+    END IF;
+END//
+
+DELIMITER ;
