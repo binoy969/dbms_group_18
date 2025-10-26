@@ -1,0 +1,145 @@
+CREATE TABLE department (
+  department_id VARCHAR(50) PRIMARY KEY,
+  name VARCHAR(150)
+);
+
+CREATE TABLE admin (
+  admin_id VARCHAR(50) PRIMARY KEY,
+  department_id VARCHAR(50) ,
+  fname VARCHAR(100),
+  lname VARCHAR(100),
+  email VARCHAR(255),
+  phone_no VARCHAR(30),
+  address VARCHAR(255),
+  dob DATE,
+  FOREIGN KEY (department_id) REFERENCES department(department_id) ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+CREATE TABLE dean (
+  dean_id VARCHAR(50) PRIMARY KEY,
+  department_id VARCHAR(50) ,
+  fname VARCHAR(100),
+  lname VARCHAR(100),
+  email VARCHAR(255),
+  phone_no VARCHAR(30),
+  address VARCHAR(255),
+  dob DATE,
+  FOREIGN KEY (department_id) REFERENCES department(department_id) ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+CREATE TABLE lecturer (
+  lecturer_id VARCHAR(50) PRIMARY KEY,
+  department_id VARCHAR(50),
+  fname VARCHAR(100),
+  lname VARCHAR(100),
+  email VARCHAR(255),
+  phone_no VARCHAR(30),
+  address VARCHAR(255),
+  dob DATE,
+  lec_hours INT
+);
+
+
+
+
+CREATE TABLE subject (
+  subject_id VARCHAR(50) PRIMARY KEY,
+  name VARCHAR(200),
+  credits INT
+ 
+);
+
+
+CREATE TABLE lecturer_course (
+  lecturer_id VARCHAR(50),
+  course_id VARCHAR(50),
+  PRIMARY KEY (lecturer_id, course_id),
+  FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (course_id) REFERENCES subject(subject_id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE student (
+  reg_no VARCHAR(50) PRIMARY KEY,
+  fname VARCHAR(100),
+  lname VARCHAR(100),
+  state VARCHAR(100),
+  email VARCHAR(255),
+  phone_no VARCHAR(30),
+  address VARCHAR(255),
+  dob DATE
+  
+);
+
+CREATE TABLE student_subject (
+  reg_no VARCHAR(50),
+  subject_id VARCHAR(50),
+  semester VARCHAR(50),
+  PRIMARY KEY (reg_no, subject_id),
+  FOREIGN KEY (reg_no) REFERENCES student(reg_no) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (subject_id) REFERENCES subject(subject_id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE exam (
+  exam_id INT PRIMARY KEY AUTO_INCREMENT,
+  student_id VARCHAR(50),
+  subject_id VARCHAR(50),
+  exam_date DATE,
+  exam_type VARCHAR(100),
+  notes TEXT,
+  FOREIGN KEY (subject_id) REFERENCES subject(subject_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (student_id) REFERENCES student(reg_no) ON DELETE CASCADE ON UPDATE CASCADE
+
+);
+
+
+
+
+
+CREATE TABLE marks (
+marks_id VARCHAR(50),
+subject_id VARCHAR(50),
+student_id VARCHAR(50),
+quiz_1 decimal(5,2),
+quiz_2 decimal(5,2),
+quiz_3 decimal(5,2),
+assignment decimal(5,2),
+mid decimal(5,2),
+end decimal(5,2),  
+  FOREIGN KEY (subject_id) REFERENCES subject(subject_id) ON DELETE CASCADE ON UPDATE CASCADE,
+   FOREIGN KEY (student_id) REFERENCES student(reg_no) ON DELETE CASCADE ON UPDATE CASCADE
+
+
+
+);
+
+CREATE TABLE medical (
+  medical_id VARCHAR(50) PRIMARY KEY,
+  subject_id VARCHAR(50),
+  reg_no VARCHAR(50),
+  details TEXT,
+  submitted_date DATE,
+  checked_by VARCHAR(150),
+  FOREIGN KEY (reg_no) REFERENCES student(reg_no) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (subject_id) REFERENCES subject(subject_id) ON DELETE CASCADE ON UPDATE CASCADE
+
+);
+
+CREATE TABLE attendance (
+  attendance_id VARCHAR(50) PRIMARY KEY,
+  reg_no VARCHAR(50),
+  attendance INT,
+  atten_date DATE,
+  subject_id VARCHAR(50),
+  FOREIGN KEY (subject_id) REFERENCES subject(subject_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (reg_no) REFERENCES student(reg_no) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE technical_officer (
+  tech_id VARCHAR(50) PRIMARY KEY,
+  fname VARCHAR(100),
+  lname VARCHAR(100),
+  email VARCHAR(255),
+  phone_no VARCHAR(10),
+  address VARCHAR(255),
+  dob DATE
+);

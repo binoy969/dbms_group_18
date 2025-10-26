@@ -1,0 +1,39 @@
+CREATE USER 'dean'@'localhost' IDENTIFIED BY 'deanpwd';
+
+GRANT ALL PRIVILEGES ON student_management.* 
+TO 'dean'@'localhost';
+
+-------------------------------------------------------
+
+CREATE USER 'admin'@'localhost' IDENTIFIED BY 'adminpwd';
+
+GRANT ALL PRIVILEGES ON student_management.* 
+TO 'admin'@'localhost' 
+WITH GRANT OPTION;
+
+-------------------------------------------------------
+
+CREATE USER 'lecturer'@'localhost' IDENTIFIED BY 'lecpwd';
+
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, DROP, INDEX, REFERENCES ON student_management.* 
+TO 'lecturer'@'localhost';
+
+-------------------------------------------------------
+
+CREATE USER 'technical_officer'@'localhost' IDENTIFIED BY 'topwd';
+
+GRANT SELECT, INSERT, UPDATE 
+ON student_management.attendance TO 'technical_officer'@'localhost';
+
+GRANT SELECT, INSERT, UPDATE 
+ON student_management.medical TO 'technical_officer'@'localhost';
+
+--------------------------------------------------------
+
+CREATE USER 'student'@'localhost' IDENTIFIED BY 'stpwd';
+
+GRANT SELECT
+ON student_management.attendance TO 'student'@'localhost';
+
+GRANT SELECT
+ON student_management.marks TO 'student'@'localhost';
