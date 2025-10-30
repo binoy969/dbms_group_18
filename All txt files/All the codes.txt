@@ -1,52 +1,9 @@
 CREATE DATABASE student_management;
 
-USE student_managemnt;
+USE student_management;
 
 
--------------USER CREATION---------------------------
-
-CREATE USER 'dean'@'localhost' IDENTIFIED BY 'deanpwd';
-
-GRANT ALL PRIVILEGES ON student_management.* 
-TO 'dean'@'localhost';
-
--------------------------------------------------------
-
-CREATE USER 'admin'@'localhost' IDENTIFIED BY 'adminpwd';
-
-GRANT ALL PRIVILEGES ON student_management.* 
-TO 'admin'@'localhost' 
-WITH GRANT OPTION;
-
--------------------------------------------------------
-
-CREATE USER 'lecturer'@'localhost' IDENTIFIED BY 'lecpwd';
-
-GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, DROP, INDEX, REFERENCES ON student_management.* 
-TO 'lecturer'@'localhost';
-
--------------------------------------------------------
-
-CREATE USER 'technical_officer'@'localhost' IDENTIFIED BY 'topwd';
-
-GRANT SELECT, INSERT, UPDATE 
-ON student_management.attendance TO 'technical_officer'@'localhost';
-
-GRANT SELECT, INSERT, UPDATE 
-ON student_management.medical TO 'technical_officer'@'localhost';
-
---------------------------------------------------------
-
-CREATE USER 'student'@'localhost' IDENTIFIED BY 'stpwd';
-
-GRANT SELECT
-ON student_management.attendance TO 'student'@'localhost';
-
-GRANT SELECT
-ON student_management.marks TO 'student'@'localhost';
-
-
----------------TABLE CREATION----------------------------
+-- TABLE CREATION
 
 CREATE TABLE department (
   department_id VARCHAR(50) PRIMARY KEY,
@@ -195,7 +152,52 @@ CREATE TABLE technical_officer (
 );
 
 
--------------DATA INSERT---------------------------
+
+
+-- USER CREATION
+
+CREATE USER 'dean'@'localhost' IDENTIFIED BY 'deanpwd';
+
+GRANT ALL PRIVILEGES ON student_management.* 
+TO 'dean'@'localhost';
+
+
+
+CREATE USER 'admin'@'localhost' IDENTIFIED BY 'adminpwd';
+
+GRANT ALL PRIVILEGES ON student_management.* 
+TO 'admin'@'localhost' 
+WITH GRANT OPTION;
+
+
+
+CREATE USER 'lecturer'@'localhost' IDENTIFIED BY 'lecpwd';
+
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, DROP, INDEX, REFERENCES ON student_management.* 
+TO 'lecturer'@'localhost';
+
+
+
+CREATE USER 'technical_officer'@'localhost' IDENTIFIED BY 'topwd';
+
+GRANT SELECT, INSERT, UPDATE 
+ON student_management.attendance TO 'technical_officer'@'localhost';
+
+GRANT SELECT, INSERT, UPDATE 
+ON student_management.medical TO 'technical_officer'@'localhost';
+
+
+
+CREATE USER 'student'@'localhost' IDENTIFIED BY 'stpwd';
+
+GRANT SELECT
+ON student_management.attendance TO 'student'@'localhost';
+
+GRANT SELECT
+ON student_management.marks TO 'student'@'localhost';
+
+
+-- DATA INSERT
 
 
 
@@ -1787,7 +1789,7 @@ INSERT INTO attendance (attendance_id, reg_no, attendance, atten_date, subject_i
 
 
 
-------------------------- VIEWS-------------------------------------
+-- VIEWS
 
 CREATE VIEW lecturer_info AS
 SELECT l.lecturer_id,
@@ -1848,7 +1850,7 @@ SELECT * FROM student_subject_info;
 SELECT * FROM marks_info;
 SELECT * FROM exam_details;
 
---------------------------PROCEDURES-----------------------------
+-- PROCEDURES
 
 
 -- 01
@@ -3130,9 +3132,10 @@ END //
 DELIMITER ;
 
 
- -- Attendance percentage  one sub one student --
+-- Attendance percentage  one sub one student
 
 DELIMITER //
+
 CREATE PROCEDURE attendance_by_id(
 IN id VARCHAR(50),
 IN sub_id VARCHAR(50)
@@ -3154,13 +3157,13 @@ WHERE attendance=1 AND reg_no = id AND subject_id = sub_id;
 SET percentage = ((attend/total_days)*100);
 SELECT id,sub_id,percentage;
 
-END;
+END//
 
-DELIMITER;
+DELIMITER ;
 
-------------------------------------------------------------------------------------
 
--- Give sub id to show summarized attendance percentage --
+
+-- Give sub id to show summarized attendance percentage 
 
 DELIMITER //
 
@@ -3182,7 +3185,7 @@ END //
 DELIMITER ;
 
 
------------------------------------------------------------------------------------
+
 
 -- Show the eligibility of students by giving subject id --
 
@@ -3206,7 +3209,7 @@ END //
 
 DELIMITER ;
 
-----------------------------------------------------------------------------------
+
 
 -- Separately shows eligibility for each course code by giving reg_no and sub_id --
 
@@ -3233,7 +3236,7 @@ END //
 DELIMITER ;
 
 
------------------------------------------------------------------------------------
+
 
 
 -- when reg_no and sub_id given shows if he eligible for end exam --
@@ -3283,7 +3286,7 @@ END //
 DELIMITER ;
 
 
-----------------------------------------------------------------------------------
+
 
 -- Update the status of attendance table according to the submitted medicals --
 
@@ -3304,7 +3307,7 @@ DELIMITER ;
 
 
 
----------------------------------------------------------------------------------
+
 
 DELIMITER //
 CREATE PROCEDURE get_marks(IN reg_no_param VARCHAR(50))
@@ -3329,7 +3332,7 @@ END//
 DELIMITER ;
 
 
----------------------------------------------------------------------------------
+
 
 DELIMITER //
 CREATE PROCEDURE get_eligibility(IN reg_no_param VARCHAR(50))
@@ -3373,9 +3376,9 @@ BEGIN
     END IF;
 END //
 
-DELIMIER ;
+DELIMITER ;
 
------------------------------------------------------------------------------------------
+
 
 DELIMITER //
 
@@ -3416,7 +3419,7 @@ END //
 
 DELIMITER ;
 
-------------------------------------------------------------------------------------------
+
 
 DELIMITER //
 
@@ -3463,9 +3466,9 @@ BEGIN
     JOIN subject s ON m.subject_id = s.subject_id;
 END //
 
-DELIMITER;
+DELIMITER ;
 
--------------------------------------------------------------------------------------------------------
+
 
 DELIMITER //
 
@@ -3516,7 +3519,7 @@ BEGIN
 END //
 
 DELIMITER ;
---------------------------------------------------------------------------------------------
+
 
 CREATE PROCEDURE ;
 DROP PROCEDURE ;
